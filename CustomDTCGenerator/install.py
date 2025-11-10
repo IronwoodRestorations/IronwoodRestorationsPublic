@@ -6,14 +6,6 @@ import sys
 dependencies = [("reportlab", True)]
 mainScript = "custom_dtc_builder.py"
 
-# runs the actual Install
-def installDep(dep):
-    try:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", dep])
-    except Exception as e:
-        print(f"'{dep}' failed to install. Exception: {e}")
-        quit()
-
 # Loop for each dependency
 for dep, is_critical in dependencies:
     try:
@@ -34,7 +26,11 @@ for dep, is_critical in dependencies:
             else:
                 print(f"Install of '{dep}' skipped")
         elif install == "y":
-            installDep(dep)
+            try:
+                subprocess.check_call([sys.executable, "-m", "pip", "install", dep])
+            except Exception as e:
+                print(f"'{dep}' failed to install. Exception: {e}")
+                quit()
             print(f"'{dep}' successfully installed. You may now run main project's python script: '{mainScript}'")
         else:
             print(f"Install of '{dep}' skipped")
